@@ -86,18 +86,9 @@ func main() {
 
 				roll := temp[0:flag]
 				count, _ := strconv.Atoi(temp[flag+1:])
-				// log.Println(roll)
-				// if roll == "roll" {
-				// 	println("YES")
-				// } else {
-				// 	println("No")
-				// }
-				// log.Println(count)
-				//log.Println(temp)
 				rollw := roll + "w"
 				rollc := roll + "c"
 				rollstarttime := roll + "st"
-				// log.Println(rollw)
 
 				wb := db.NewWriteBatch()
 				defer wb.Cancel()
@@ -114,7 +105,6 @@ func main() {
 					// check(wb.Set([]byte(rollstarttime), []byte(strconv.Itoa(int(sec)))))
 				} else {
 					nowords, _ := strconv.Atoi(entry.Value(fnc).Error())
-					//log.Println(nowords)
 					txn3 := db.NewTransaction(false)
 					defer txn3.Discard()
 					entry2, err := txn3.Get([]byte(rollc))
@@ -188,7 +178,6 @@ func main() {
 							timeNow := time.Now()
 							secNow := timeNow.Unix()
 							wpmin := float64(val*60) / float64(int(secNow)-starttime)
-							log.Println(wpmin)
 							conn.WriteJSON(myStruct{
 								Rollno: roll,
 								Words:  strconv.Itoa(val),
@@ -198,8 +187,6 @@ func main() {
 						}
 						i++
 					}
-
-					//fmt.Println("Read", i, "Keys")
 					return nil
 
 				})
@@ -208,50 +195,17 @@ func main() {
 		}(conn)
 	})
 
-	// http.HandleFunc("/teacher/ws", )
-
-	// txn1 := db.NewTransaction(true)
-	// defer txn1.Discard()
-
-	// check(txn1.Set([]byte(key(300)), []byte("bVal")))
-
-	// fmt.Printf("inserted key '%s' using txn.Set\n", key(300))
-
-	// txn2 := db.NewTransaction(false)
-	// entry, err := txn2.Get([]byte(key(300)))
-	// check(err)
-	// fmt.Printf("Read key '%s' using txn.Get\n", string(entry.Key()))
-	// N, M := 20, 0
-
-	// wb := db.NewWriteBatch()
-	// defer wb.Cancel()
-	// check(wb.Set([]byte("bKey"), []byte("bVal")))
-
-	// for i := 0; i < N; i++ {
-	// 	check(wb.Set(key(i), val(i)))
-	// }
-
-	// for i := 0; i < M; i++ {
-	// 	check(wb.Delete(key(i)))
-	// }
-
-	// check(wb.Flush())
-
-	// fmt.Println("Inserted", N, "Deleted", M)
-
 	err = db.View(func(txn *badger.Txn) error {
 		iopt := badger.DefaultIteratorOptions
 		itr := txn.NewIterator(iopt)
 		defer itr.Close()
 		i := 0
 		for itr.Rewind(); itr.Valid(); itr.Next() {
-			log.Println(string(itr.Item().Key()))
-			val, _ := strconv.Atoi(itr.Item().Value(fnc).Error())
-			log.Println(val)
+			txn.Delete(itr.Item().Key())
 			i++
 		}
 
-		fmt.Println("Read", i, "Keys")
+		fmt.Println("Deleted", i, "Keys")
 		return nil
 
 	})

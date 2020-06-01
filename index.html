@@ -6,15 +6,26 @@
 	<meta name="viewport" content="width=device-width,initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<title>Document</title>
+	<style>
+		input[type=text] {
+			width: 100%;
+			padding: 12px 20px;
+			margin: 8px 0;
+			box-sizing: border-box;
+		}
+		input[type=text]:focus {
+			background-color: lightblue;
+		}
+	</style>
 </head>
 <body>
 	<h3>Enter rollNo</h3>
-	<input type="text" id="rollNo" onchange="rollChange()">
+	<input type="text" id="rollNo" onchange="rollChange()" >
 	<br>
 	<h2>
 		Enter TEXT
 	</h2>
-    <input type="text" id="msg" oninput="textChange()">
+    <input type="text" id="msg" oninput="textChange()" size="50">
 
 	<script>
     	var socket = new WebSocket("ws://localhost:8080/student/ws")

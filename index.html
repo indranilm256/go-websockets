@@ -19,13 +19,13 @@
 	</style>
 </head>
 <body>
-	<h3>Enter rollNo</h3>
-	<input type="text" id="rollNo" onchange="rollChange()" >
+	<h3>Enter RollNo</h3>
+	<input type="text" autocomplete="off" id="rollNo" onchange="rollChange()" >
 	<br>
 	<h2>
-		Enter TEXT
+		Enter TEXT (words get registered after each space)
 	</h2>
-    <input type="text" id="msg" oninput="textChange()" size="50">
+    <input type="text" id="msg" oninput="textChange()" size="50" autocomplete="off">
 
 	<script>
     	var socket = new WebSocket("ws://localhost:8080/student/ws")

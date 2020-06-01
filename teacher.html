@@ -1,0 +1,105 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Table</title>
+	<style type="text/css">
+		table#t01 {
+			width: 100%;
+			background-color: #f1f1c1;
+		}
+	</style>
+</head>
+<body>
+	<h2>Real-time data reception</h2>
+	<table id="t01">
+		<tr>
+    		<th>Roll No</th>
+    		<th>Total Words</th> 
+   			<th>Total Characters</th>
+   			<th>Words/Minute</th>
+		</tr>
+
+		<tr>
+    		<th id="rollno"></th>
+    		<th id="words"></th> 
+   			<th id="chars"></th>
+   			<th>Nil</th>
+		</tr>
+		
+		 
+	</table>
+
+	<p id="demo"></p>
+
+	<script>
+
+		var socket = new WebSocket("ws://localhost:8080/teacher/ws")
+		socket.addEventListener("message", function(e) {
+			var obj= JSON.parse(e.data);
+			var table = document.getElementById("t01");
+			var flag = -1;
+			var rollno = obj.rollno;
+			var words = obj.words;
+			var chars = obj.chars;
+			var wpmin = obj.wpmin;
+			console.log(rollno,words,chars,wpmin);
+			for(var i = 0,row; row = table.rows[i]; i++){
+				var temp = row.cells[0].innerHTML;
+				if(rollno == temp){
+					flag = i;
+				}
+				//console.log(flag);
+			}
+			if(flag==-1){
+				var newRow = table.insertRow(-1);
+				let newCell = newRow.insertCell(0);
+				let newText = document.createTextNode(rollno);
+				newCell.appendChild(newText);
+				newCell = newRow.insertCell(1);
+				newText = document.createTextNode(words);
+				newCell.appendChild(newText);
+				newCell = newRow.insertCell(2);
+				newText = document.createTextNode(chars);
+				newCell.appendChild(newText);
+				newCell = newRow.insertCell(3);
+				newText = document.createTextNode(wpmin);
+				newCell.appendChild(newText);
+			}
+			else {
+				row = table.rows[flag]
+				row.cells[1].innerHTML = words;
+				row.cells[2].innerHTML = chars;
+				row.cells[3].innerHTML = wpmin
+			}
+			
+			console.log(obj);
+		});
+		console.log("Attempting WebSocket connection")
+
+		socket.onopen = () => {
+			console.log("Successfully connected");
+		}
+
+		socket.onclose = (event) =>{
+			console.log("Socket connection closed: ",event)
+		}
+
+		socket.onmessage = (msg) =>{
+			console.log(msg);
+		}
+
+		socket.onerror = (error) =>{
+			console.log("Socket error:", error);
+		}
+		
+		
+
+	</script>
+
+
+</body>
+</html>

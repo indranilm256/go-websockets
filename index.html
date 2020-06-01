@@ -1,0 +1,62 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Document</title>
+</head>
+<body>
+	<h3>Enter rollNo</h3>
+	<input type="text" id="rollNo" onchange="rollChange()">
+	<br>
+	<h2>
+		Enter TEXT
+	</h2>
+    <input type="text" id="msg" oninput="textChange()">
+
+	<script>
+    	var socket = new WebSocket("ws://localhost:8080/student/ws")
+		socket.addEventListener("message", function(e) {console.log(e);});
+		console.log("Attempting WebSocket connection")
+
+		socket.onopen = () => {
+			console.log("Successfully connected");
+		}
+
+		socket.onclose = (event) =>{
+			console.log("Socket connection closed: ",event)
+		}
+
+		socket.onmessage = (msg) =>{
+			console.log(msg);
+		}
+
+		socket.onerror = (error) =>{
+			console.log("Socket error:", error);
+		}
+
+        var roll = null;
+
+        var counter = 0;
+
+        function rollChange() {
+            roll = document.getElementById("rollNo").value;
+        }
+
+        function textChange() {
+            var x = document.getElementById("msg").value;
+            if(x.charAt(x.length-1)==' '){
+                socket.send(roll+'_'+counter)
+                counter=0;
+            }
+            else counter+=1;
+        }
+
+
+
+	</script>
+
+</body>
+</html>

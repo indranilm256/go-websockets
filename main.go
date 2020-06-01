@@ -35,6 +35,12 @@ func fnc(val []byte) error {
 	return errors.New(string(val))
 }
 
+// func fnc(v []byte) error {
+// 	if err := handleMessage(k, v); err != nil {
+// 		log.Fatal(err)
+// 	}
+// }
+
 func main() {
 
 	opt := badger.DefaultOptions("./data")
@@ -195,13 +201,15 @@ func main() {
 		}(conn)
 	})
 
-	err = db.View(func(txn *badger.Txn) error {
+	err = db.Update(func(txn *badger.Txn) error {
 		iopt := badger.DefaultIteratorOptions
 		itr := txn.NewIterator(iopt)
 		defer itr.Close()
 		i := 0
 		for itr.Rewind(); itr.Valid(); itr.Next() {
-			txn.Delete(itr.Item().Key())
+			if err := txn.Delete(itr.Item().Key()); err != nil {
+				log.Println(err)
+			}
 			i++
 		}
 

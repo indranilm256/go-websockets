@@ -57,7 +57,7 @@
 
         function textChange() {
             var x = document.getElementById("msg").value;
-            if(x.charAt(x.length-1)==' '){
+            if(x.charAt(x.length-1)==' ' && x.charAt(x.length-2)!=' '){
                 socket.send(roll+'_'+counter)
                 counter=0;
             }

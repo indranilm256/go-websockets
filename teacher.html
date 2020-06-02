@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -48,41 +47,45 @@
 		socket.addEventListener("message", function(e) {
 			var obj= JSON.parse(e.data);
 			var table = document.getElementById("t01");
-			var flag = -1;
+			var flag = -1,ind = 1;
 			var rollno = obj.rollno;
 			var words = obj.words;
 			var chars = obj.chars;
 			var wpmin = obj.wpmin;
 			console.log(rollno,words,chars,wpmin);
-			for(var i = 0,row; row = table.rows[i]; i++){
-				var temp = row.cells[0].innerHTML;
-				if(rollno == temp){
+			for(var i = 1,row; row = table.rows[i]; i++){
+				var temproll = row.cells[0].innerHTML;
+				if(parseInt(rollno) == parseInt(temproll)){
 					flag = i;
+					break;
 				}
 				//console.log(flag);
 			}
-			if(flag==-1){
-				var newRow = table.insertRow(-1);
-				let newCell = newRow.insertCell(0);
-				let newText = document.createTextNode(rollno);
-				newCell.appendChild(newText);
-				newCell = newRow.insertCell(1);
-				newText = document.createTextNode(words);
-				newCell.appendChild(newText);
-				newCell = newRow.insertCell(2);
-				newText = document.createTextNode(chars);
-				newCell.appendChild(newText);
-				newCell = newRow.insertCell(3);
-				newText = document.createTextNode(wpmin);
-				newCell.appendChild(newText);
+			for(var i = 1,row; row = table.rows[i]; i++){
+				var tempwpmin = row.cells[3].innerHTML ;
+				if(parseFloat(wpmin)<=parseFloat(tempwpmin)){
+					ind = i;
+				}
 			}
-			else {
-				row = table.rows[flag]
-				row.cells[1].innerHTML = words;
-				row.cells[2].innerHTML = chars;
-				row.cells[3].innerHTML = wpmin
+
+			if(flag != -1){
+				table.deleteRow(flag)
 			}
-			
+			var newRow = table.insertRow(ind);
+			let newCell = newRow.insertCell(0);
+			let newText = document.createTextNode(rollno);
+			newCell.appendChild(newText);
+			newCell = newRow.insertCell(1);
+			newText = document.createTextNode(words);
+			newCell.appendChild(newText);
+			newCell = newRow.insertCell(2);
+			newText = document.createTextNode(chars);
+			newCell.appendChild(newText);
+			newCell = newRow.insertCell(3);
+			newText = document.createTextNode(wpmin);
+			newCell.appendChild(newText);
+
+		
 			console.log(obj);
 		});
 		console.log("Attempting WebSocket connection")
